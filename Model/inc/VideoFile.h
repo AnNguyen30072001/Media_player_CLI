@@ -1,7 +1,9 @@
 #ifndef __VIDEO_FILE_
 #define __VIDEO_FILE_
 
-#include "main.h"
+#include "MediaFile.h"
+
+using namespace std;
 
 class VideoFile : public MediaFile {
 private:

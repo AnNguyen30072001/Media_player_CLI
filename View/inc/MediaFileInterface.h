@@ -1,12 +1,7 @@
 #ifndef __MEDIA_FILE_INTERFACE_
 #define __MEDIA_FILE_INTERFACE_
 
-#include <iostream>
-#include <taglib/tag.h>
-#include <taglib/fileref.h>
-#include <taglib/taglib.h>
-
-using namespace std;
+#include "main.h"
 
 class MediaBrowser;
 

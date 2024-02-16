@@ -7,17 +7,15 @@
 #include "MediaFileInterface.h"
 #include "PlaylistInterface.h"
 #include "Playlist.h"
-
-#include <taglib/tag.h>
-#include <taglib/fileref.h>
-#include <taglib/taglib.h>
-
-using namespace std;
+#include "Metadata.h"
 
 class MediaBrowser {
 private:
     vector<MediaFile*> mediaFiles;
     vector<Playlist*> playlists;
+
+    Metadata metadata;
+
     MainInterface interface_main;
     MediaFileInterface interface_media_file;
     PlaylistInterface interface_playlist;
@@ -29,6 +27,8 @@ public:
     int captureInput();
 
     void localMediaFileBrowser();
+
+    int emptyPlaylistHandler();
 
     void playlistBrowser();
 
@@ -47,10 +47,6 @@ public:
     void deleteFromPlaylist(Playlist* playlist);
 
     void deletePlaylist(int playlist_idx);
-
-    void viewMetadata(int file_idx);
-
-    void updateMetadata(int file_idx);
 
     vector<MediaFile*> getMediaFiles();
 

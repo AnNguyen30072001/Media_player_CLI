@@ -1,7 +1,6 @@
 #ifndef FA110AE1_2A82_4F4F_B944_5BC914282698
 #define FA110AE1_2A82_4F4F_B944_5BC914282698
 
-#include "main.h"
 #include "Playlist.h"
 
 class MainInterface {

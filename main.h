@@ -6,16 +6,16 @@
 #include <filesystem>
 #include <vector>
 #include <algorithm>
+#include <taglib/tag.h>
+#include <taglib/fileref.h>
+#include <taglib/taglib.h>
 
-#include "MediaFile.h"
-#include "Playlist.h"
-#include "MediaFileInterface.h"
-#include "PlaylistInterface.h"
-#include "MetadataInterface.h"
-#include "MainInterface.h"
-#include "AudioFile.h"
-#include "VideoFile.h"
-#include "MediaBrowser.h"
+using namespace std;
+
+enum {
+    CONTINUE_ACTION                 = 0,
+    ABORT_ACTION                    = 1
+};
 
 enum {
     UNKNOWN_FILE_TYPE               = 0,

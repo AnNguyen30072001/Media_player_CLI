@@ -4,6 +4,9 @@
 class MetadataInterface 
 {
 public:
+    MetadataInterface() = default;
+    ~MetadataInterface() = default;
+
     void menuInterface();
 
     void chooseMetadataField();

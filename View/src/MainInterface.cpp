@@ -1,7 +1,4 @@
-#include "main.h"
 #include "MainInterface.h"
-#include "Playlist.h"
-#include "MediaBrowser.h"
 
 void MainInterface::mainMenuInterface() {
     cout << "--------------------------------------------------------" << endl;

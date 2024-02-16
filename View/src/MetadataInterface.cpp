@@ -1,7 +1,5 @@
 #include "main.h"
-#include <iostream>
-
-using namespace std;
+#include "MetadataInterface.h"
 
 void MetadataInterface::menuInterface() 
 {

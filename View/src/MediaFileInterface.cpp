@@ -1,6 +1,5 @@
 #include "MediaFileInterface.h"
 #include "MediaBrowser.h"
-#include <filesystem>
 
 void MediaFileInterface::menuInterface() {
     cout << "--------------------------------------------------------" << endl;

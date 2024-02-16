@@ -1,10 +1,9 @@
-#include "main.h"
-
 #include "MediaBrowser.h"
-#include <filesystem>
+#include "AudioFile.h"
+#include "VideoFile.h"
 
 #define START_PAGE          1
-#define PAGINATION_SIZE     10
+#define PAGINATION_SIZE     25
 #define MP3_EXTENSION_NAME  ".mp3"
 #define MP4_EXTENSION_NAME  ".mp4"
 
@@ -60,6 +59,17 @@ void MediaBrowser::localMediaFileBrowser() {
     }
 }
 
+int MediaBrowser::emptyPlaylistHandler() {
+    string create_playlist_cmd = interface_playlist.noPlaylistAvailable();
+    if(create_playlist_cmd == "Y" || create_playlist_cmd == "y") {
+        createPlaylist();
+        return CONTINUE_ACTION;
+    }
+    else {
+        return ABORT_ACTION;
+    }
+}
+
 void MediaBrowser::playlistBrowser() {
     int command;
     string create_playlist_cmd;
@@ -71,11 +81,7 @@ void MediaBrowser::playlistBrowser() {
         switch(command) {
             case VIEW_PLAYLIST:
                 if(playlists.empty()) {
-                    create_playlist_cmd = interface_playlist.noPlaylistAvailable();
-                    if(create_playlist_cmd == "Y" || create_playlist_cmd == "y") {
-                        createPlaylist();
-                    }
-                    else {
+                    if(emptyPlaylistHandler() == ABORT_ACTION) {
                         continue;
                     }
                 }
@@ -103,11 +109,7 @@ void MediaBrowser::playlistBrowser() {
             
             case ADD_TO_PLAYLIST:
                 if(playlists.empty()) {
-                    create_playlist_cmd = interface_playlist.noPlaylistAvailable();
-                    if(create_playlist_cmd == "Y" || create_playlist_cmd == "y") {
-                        createPlaylist();
-                    }
-                    else {
+                    if(emptyPlaylistHandler() == ABORT_ACTION) {
                         continue;
                     }
                 }
@@ -154,6 +156,7 @@ void MediaBrowser::playlistMetadata() {
                 }
                 interface_playlist.viewPlaylist(playlists);
                 interface_playlist.enterPlaylistName(PLAYLIST_METADATA);
+
                 playlist_idx = captureInput();
                 if(playlist_idx <= 0 || playlist_idx > (int)playlists.size()) {
                     interface_main.invalidChoiceInterface();
@@ -165,6 +168,7 @@ void MediaBrowser::playlistMetadata() {
                 }
                 interface_playlist.viewFilesInPlaylist(playlists[playlist_idx - 1]);
                 interface_metadata.metadataChooseFile(SHOW_METADATA);
+
                 file_idx = captureInput();
                 if(file_idx > 0 && file_idx <= (int)playlists[playlist_idx - 1]->getFiles().size()) {
                     bool file_found = false;
@@ -179,7 +183,7 @@ void MediaBrowser::playlistMetadata() {
                         local_media_file_idx++;
                     }
                     if(file_found == true)
-                        viewMetadata(file_idx);
+                        metadata.viewMetadata(this, file_idx);
                     else
                         interface_metadata.getMetadataError();
                 }
@@ -195,6 +199,7 @@ void MediaBrowser::playlistMetadata() {
                 }
                 interface_playlist.viewPlaylist(playlists);
                 interface_playlist.enterPlaylistName(PLAYLIST_METADATA);
+
                 playlist_idx = captureInput();
                 if(playlist_idx <= 0 || playlist_idx > (int)playlists.size()) {
                     interface_main.invalidChoiceInterface();
@@ -206,10 +211,11 @@ void MediaBrowser::playlistMetadata() {
                 }
                 interface_playlist.viewFilesInPlaylist(playlists[playlist_idx - 1]);
                 interface_metadata.metadataChooseFile(UPDATE_METADATA);
+
                 file_idx = captureInput();
                 if(file_idx > 0 && file_idx <= (int)playlists[playlist_idx - 1]->getFiles().size()){
-                    viewMetadata(file_idx);
-                    updateMetadata(file_idx);
+                    metadata.viewMetadata(this, file_idx);
+                    metadata.updateMetadata(this, file_idx);
                 }
                 else {
                     interface_main.invalidChoiceInterface();
@@ -277,6 +283,7 @@ void MediaBrowser::modifyMediaFiles() {
 
     while (true) {
         interface_media_file.modifyMenuInterface();
+
         modify_command = captureInput();
         string create_playlist_cmd;
         switch(modify_command) {
@@ -287,8 +294,9 @@ void MediaBrowser::modifyMediaFiles() {
                 }
                 interface_media_file.displayMediaFiles(this, currentPage, pageSize);
                 interface_metadata.metadataChooseFile(SHOW_METADATA);
+
                 input_opt = captureInput();
-                viewMetadata(input_opt);
+                metadata.viewMetadata(this, input_opt);
                 break;
             
             case UPDATE_METADATA:
@@ -298,18 +306,15 @@ void MediaBrowser::modifyMediaFiles() {
                 }
                 interface_media_file.displayMediaFiles(this, currentPage, pageSize);
                 interface_metadata.metadataChooseFile(UPDATE_METADATA);
+
                 input_opt = captureInput();
-                viewMetadata(input_opt);
-                updateMetadata(input_opt);
+                metadata.viewMetadata(this, input_opt);
+                metadata.updateMetadata(this, input_opt);
                 break;
 
             case ADD_LOCAL_TO_PLAYLIST:
                 if(playlists.empty()) {
-                    create_playlist_cmd = interface_playlist.noPlaylistAvailable();
-                    if(create_playlist_cmd == "Y" || create_playlist_cmd == "y") {
-                        createPlaylist();
-                    }
-                    else {
+                    if(emptyPlaylistHandler() == ABORT_ACTION) {
                         continue;
                     }
                 }
@@ -329,6 +334,7 @@ void MediaBrowser::createPlaylist() {
     string new_name;
     string confirm_action;
     interface_playlist.enterPlaylistName(CREATE_PLAYLIST);
+
     getline(cin, new_name);
     for(const auto& playlist : playlists) {
         if(playlist->getName() == new_name) {
@@ -337,6 +343,7 @@ void MediaBrowser::createPlaylist() {
         }
     }
     interface_playlist.confirmAction(CREATE_PLAYLIST, new_name);
+
     getline(cin, confirm_action);
     if(confirm_action == "Y" || confirm_action == "y") {
         playlists.push_back(new Playlist(new_name));
@@ -352,6 +359,7 @@ void MediaBrowser::addToPlaylist() {
 
     interface_playlist.viewPlaylist(playlists);
     interface_playlist.enterPlaylistName(ADD_TO_PLAYLIST);
+
     playlist_idx = captureInput();
     if(playlist_idx > 0 && playlist_idx <= (int)playlists.size()) {
         interface_media_file.displayMediaFiles(this, currentPage, pageSize);
@@ -401,95 +409,13 @@ void MediaBrowser::deletePlaylist(int playlist_idx) {
     string confirm_action;
     string playlist_name = playlists[playlist_idx]->getName();
     interface_playlist.confirmAction(DELETE_PLAYLIST, playlist_name);
+
     getline(cin, confirm_action);
     if(confirm_action == "Y" || confirm_action == "y") {
         playlists[playlist_idx]->getFiles().clear();
         delete playlists[playlist_idx];
         playlists.erase(playlists.begin() + playlist_idx);
         interface_playlist.deleteSuccessfully(playlist_name);
-    }
-}
-
-void MediaBrowser::viewMetadata(int file_idx) {
-    string file_name = mediaFiles[file_idx-1]->getName();
-    string file_path = mediaFiles[file_idx-1]->getPath();
-    int file_type = mediaFiles[file_idx-1]->getType();
-    TagLib::FileRef fileRef(file_path.c_str());
-    if (!fileRef.isNull() && fileRef.tag()) {
-        TagLib::Tag *tag = fileRef.tag();
-        switch(file_type) {
-        case AUDIO_FILE_TYPE:
-            interface_media_file.displayAudioFileMetadata(tag, fileRef);
-            break;
-        case VIDEO_FILE_TYPE:
-            interface_media_file.displayVideoFileMetadata(tag, fileRef, file_path);
-            break;
-        default:
-            interface_media_file.getMediaFileTypeError();
-        }
-    } 
-    else {
-        interface_metadata.getMetadataError();
-    }
-}
-
-void MediaBrowser::updateMetadata(int file_idx) {
-    int update_opt;
-    string new_value;
-    interface_metadata.chooseMetadataField();
-    update_opt = captureInput();
-    interface_metadata.enterMetadataValue();
-    getline(cin, new_value);
-    string file_name = mediaFiles[file_idx-1]->getName();
-    string file_path = mediaFiles[file_idx-1]->getPath();
-    int file_type = mediaFiles[file_idx-1]->getType();
-    TagLib::FileRef fileRef(file_path.c_str());
-    TagLib::Tag *tag = fileRef.tag();
-    if(file_type == AUDIO_FILE_TYPE) {
-        switch(update_opt) {
-        case MODIFY_TRACK:
-            tag->setTrack(stoi(new_value));
-            break;
-        case MODIFY_ALBUM:
-            tag->setAlbum(new_value.c_str());
-            break;
-        case MODIFY_ARTIST:
-            tag->setArtist(new_value.c_str());
-            break;
-        case MODIFY_YEAR:
-            tag->setYear(stoi(new_value));
-            break;
-        case MODIFY_GENRE:
-            tag->setGenre(new_value.c_str());
-            break;
-        case MODIFY_AUDIO_DURATION:
-            interface_metadata.modifyMetadataError();
-            return;
-        default:
-            interface_main.invalidChoiceInterface();
-        }
-    }
-
-    else {
-        switch(update_opt) {
-        case MODIFY_VIDEO_NAME:
-            tag->setTitle(new_value.c_str());
-            break;
-        case MODIFY_SIZE:
-            interface_metadata.modifyMetadataError();
-            return;
-        case MODIFY_BIT_RATE:
-            interface_metadata.modifyMetadataError();
-            return;
-        case MODIFY_VIDEO_DURATION:
-            interface_metadata.modifyMetadataError();
-            return;
-        default:
-            interface_main.invalidChoiceInterface();
-        }            
-    }
-    if(fileRef.save() == true) {
-        interface_metadata.modifyMetadataSuccess();
     }
 }
 

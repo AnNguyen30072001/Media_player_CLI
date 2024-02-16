@@ -1,10 +1,7 @@
 #ifndef __PLAYLIST_INTERFACE_
 #define __PLAYLIST_INTERFACE_
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
+#include "main.h"
 
 class Playlist;
 

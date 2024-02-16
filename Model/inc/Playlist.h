@@ -1,8 +1,10 @@
 #ifndef C44BD54D_8A21_4D96_99D1_7ACC89A697A2
 #define C44BD54D_8A21_4D96_99D1_7ACC89A697A2
 
-#include "main.h"
 #include "MediaFile.h"
+#include <vector>
+
+using namespace std;
 
 class Playlist {
 private:

@@ -1,7 +1,7 @@
 #ifndef FA207558_4C00_4F98_A43A_F413D7F41F8D
 #define FA207558_4C00_4F98_A43A_F413D7F41F8D
 
-#include "main.h"
+#include <iostream>
 using namespace std;
 
 class MediaFile {

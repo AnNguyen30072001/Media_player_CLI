@@ -1,7 +1,7 @@
 #ifndef __AUDIO_FILE_
 #define __AUDIO_FILE_
 
-#include "main.h"
+#include "MediaFile.h"
 
 class AudioFile : public MediaFile {
 private:
