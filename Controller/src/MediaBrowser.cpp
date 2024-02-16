@@ -35,11 +35,15 @@ void MediaBrowser::localMediaFileBrowser() {
     const int pageSize = PAGINATION_SIZE;
     int command;
     while (true) {
-        mediaFileInterface.menuInterface();
+        interface_media_file.menuInterface();
         command = captureInput();
         switch(command) {
             case LIST_ALL_LOCAL_MEDIA_FILES:
-                mediaFileInterface.displayMediaFiles(this, currentPage, pageSize);
+                if(mediaFiles.empty()) {
+                    interface_media_file.listEmpty();
+                    continue;
+                }
+                interface_media_file.displayMediaFiles(this, currentPage, pageSize);
                 break;
             case MODIFY_MEDIA_FILE:
                 modifyMediaFiles();
@@ -49,25 +53,23 @@ void MediaBrowser::localMediaFileBrowser() {
                 return;
 
             default:
-                interface.invalidChoiceInterface();
+                interface_main.invalidChoiceInterface();
         }
     }
 }
 
 void MediaBrowser::playlistBrowser() {
-    // bool playlist_found;
     int command;
     string create_playlist_cmd;
     string playlist_name;
     int playlist_idx;
     while (true) {
-        // playlist_found = false;
-        playlistInterface.menuInterface();
+        interface_playlist.menuInterface();
         command = captureInput();
         switch(command) {
             case VIEW_PLAYLIST:
                 if(playlists.empty()) {
-                    create_playlist_cmd = playlistInterface.noPlaylistAvailable();
+                    create_playlist_cmd = interface_playlist.noPlaylistAvailable();
                     if(create_playlist_cmd == "Y" || create_playlist_cmd == "y") {
                         createPlaylist();
                     }
@@ -75,7 +77,7 @@ void MediaBrowser::playlistBrowser() {
                         continue;
                     }
                 }
-                playlistInterface.viewPlaylist(playlists);
+                interface_playlist.viewPlaylist(playlists);
                 break;
             case CREATE_PLAYLIST:
                 createPlaylist();
@@ -85,37 +87,23 @@ void MediaBrowser::playlistBrowser() {
                 if(playlists.empty()) {
                     continue;
                 }
-                playlistInterface.viewPlaylist(playlists);
-                playlistInterface.enterPlaylistName(DELETE_PLAYLIST);
+                interface_playlist.viewPlaylist(playlists);
+                interface_playlist.enterPlaylistName(DELETE_PLAYLIST);
 
                 playlist_idx = captureInput();
-                if(playlist_idx > 0 && playlist_idx <= playlists.size()) {
+                if(playlist_idx > 0 && playlist_idx <= (int)playlists.size()) {
                     deletePlaylist(playlist_idx - 1);
                 }
                 else {
-                    playlistInterface.playlistNotFound();
+                    interface_playlist.playlistNotFound();
                 }
-                
-
-                // getline(cin, playlist_name);
-                // for(auto& playlist : playlists) {
-                //     if(playlist->getName() == playlist_name) {
-                //         deletePlaylist(playlist_name);
-                //         playlist_found = true;
-                //         break;
-                //     }
-                // }
-                // if(playlist_found == false) {
-                //     playlistInterface.playlistNotFound();
-                // }
                 break;
             
             case ADD_TO_PLAYLIST:
                 if(playlists.empty()) {
-                    create_playlist_cmd = playlistInterface.noPlaylistAvailable();
+                    create_playlist_cmd = interface_playlist.noPlaylistAvailable();
                     if(create_playlist_cmd == "Y" || create_playlist_cmd == "y") {
                         createPlaylist();
-                        playlistInterface.viewPlaylist(playlists);
                     }
                     else {
                         continue;
@@ -125,14 +113,14 @@ void MediaBrowser::playlistBrowser() {
                 break;
             
             case DELETE_FROM_PLAYLIST:
-                playlistInterface.viewPlaylist(playlists);
-                playlistInterface.enterPlaylistName(DELETE_FROM_PLAYLIST);
+                interface_playlist.viewPlaylist(playlists);
+                interface_playlist.enterPlaylistName(DELETE_FROM_PLAYLIST);
                 playlist_idx = captureInput();
                 if(playlist_idx > 0 && playlist_idx <= (int)playlists.size()) {
                     deleteFromPlaylist(playlists[playlist_idx - 1]);
                 }
                 else {
-                    playlistInterface.playlistNotFound();
+                    interface_playlist.playlistNotFound();
                 }
                 break;
 
@@ -144,7 +132,7 @@ void MediaBrowser::playlistBrowser() {
                 return;
 
             default:
-                interface.invalidChoiceInterface();
+                interface_main.invalidChoiceInterface();
         }
     }
 }
@@ -154,53 +142,53 @@ void MediaBrowser::playlistMetadata() {
     int playlist_idx;
     int file_idx;
     while(true) {
-        cout << "--------------------------------------------------------" << endl;
-        cout << "METADATA MENU:" << endl;
-        cout << "1. Show metadata." << endl;
-        cout << "2. Update metadata." << endl;
-        cout << "0. Back." << endl;
+        interface_metadata.menuInterface();
         metadata_cmd = captureInput();
         switch(metadata_cmd) {
             case SHOW_METADATA:
                 if(playlists.empty()) {
+                    interface_metadata.listEmpty(SHOW_METADATA);
                     return;
                 }
-                playlistInterface.viewPlaylist(playlists);
-                playlistInterface.enterPlaylistName(PLAYLIST_METADATA);
+                interface_playlist.viewPlaylist(playlists);
+                interface_playlist.enterPlaylistName(PLAYLIST_METADATA);
                 playlist_idx = captureInput();
                 if(playlists[playlist_idx - 1]->getFiles().empty()) {
+                    interface_metadata.listEmpty(SHOW_METADATA);
                     return;
                 }
-                playlistInterface.viewFilesInPlaylist(playlists[playlist_idx - 1]);
-                mediaFileInterface.metadataChooseFile(SHOW_METADATA);
+                interface_playlist.viewFilesInPlaylist(playlists[playlist_idx - 1]);
+                interface_metadata.metadataChooseFile(SHOW_METADATA);
                 file_idx = captureInput();
                 if(file_idx > 0 && file_idx <= (int)playlists[playlist_idx - 1]->getFiles().size()){
                     viewMetadata(file_idx);
                 }
                 else {
-                    interface.invalidChoiceInterface();
+                    interface_main.invalidChoiceInterface();
                 }
                 break;
             
             case UPDATE_METADATA:
                 if(playlists.empty()) {
+                    interface_metadata.listEmpty(UPDATE_METADATA);
                     return;
                 }
-                playlistInterface.viewPlaylist(playlists);
-                playlistInterface.enterPlaylistName(PLAYLIST_METADATA);
+                interface_playlist.viewPlaylist(playlists);
+                interface_playlist.enterPlaylistName(PLAYLIST_METADATA);
                 playlist_idx = captureInput();
                 if(playlists[playlist_idx - 1]->getFiles().empty()) {
+                    interface_metadata.listEmpty(UPDATE_METADATA);
                     return;
                 }
-                playlistInterface.viewFilesInPlaylist(playlists[playlist_idx - 1]);
-                mediaFileInterface.metadataChooseFile(UPDATE_METADATA);
+                interface_playlist.viewFilesInPlaylist(playlists[playlist_idx - 1]);
+                interface_metadata.metadataChooseFile(UPDATE_METADATA);
                 file_idx = captureInput();
                 if(file_idx > 0 && file_idx <= (int)playlists[playlist_idx - 1]->getFiles().size()){
                     viewMetadata(file_idx);
                     updateMetadata(file_idx);
                 }
                 else {
-                    interface.invalidChoiceInterface();
+                    interface_main.invalidChoiceInterface();
                 }
                 break;
 
@@ -208,7 +196,7 @@ void MediaBrowser::playlistMetadata() {
                 return;
 
             default:
-                interface.invalidChoiceInterface();
+                interface_main.invalidChoiceInterface();
         }
     }
 }
@@ -217,7 +205,7 @@ void MediaBrowser::mainProgram() {
     int menu_command;
 
     while (true) {
-        interface.mainMenuInterface();
+        interface_main.mainMenuInterface();
         menu_command = captureInput();
 
         switch (menu_command) {
@@ -230,11 +218,11 @@ void MediaBrowser::mainProgram() {
                 break;
 
             case EXIT_APPLICATION:
-                interface.exitProgram();
+                interface_main.exitProgram();
                 return;
 
             default:
-                interface.invalidChoiceInterface();
+                interface_main.invalidChoiceInterface();
         }
     }
 }
@@ -264,20 +252,28 @@ void MediaBrowser::modifyMediaFiles() {
     int pageSize = PAGINATION_SIZE;
 
     while (true) {
-        mediaFileInterface.modifyMenuInterface();
+        interface_media_file.modifyMenuInterface();
         modify_command = captureInput();
         string create_playlist_cmd;
         switch(modify_command) {
             case SHOW_METADATA:
-                mediaFileInterface.displayMediaFiles(this, currentPage, pageSize);
-                mediaFileInterface.metadataChooseFile(SHOW_METADATA);
+                if(mediaFiles.empty()) {
+                    interface_metadata.listEmpty(SHOW_METADATA);
+                    return;
+                }
+                interface_media_file.displayMediaFiles(this, currentPage, pageSize);
+                interface_metadata.metadataChooseFile(SHOW_METADATA);
                 input_opt = captureInput();
                 viewMetadata(input_opt);
                 break;
             
             case UPDATE_METADATA:
-                mediaFileInterface.displayMediaFiles(this, currentPage, pageSize);
-                mediaFileInterface.metadataChooseFile(UPDATE_METADATA);
+                if(mediaFiles.empty()) {
+                    interface_metadata.listEmpty(UPDATE_METADATA);
+                    return;
+                }
+                interface_media_file.displayMediaFiles(this, currentPage, pageSize);
+                interface_metadata.metadataChooseFile(UPDATE_METADATA);
                 input_opt = captureInput();
                 viewMetadata(input_opt);
                 updateMetadata(input_opt);
@@ -285,7 +281,7 @@ void MediaBrowser::modifyMediaFiles() {
 
             case ADD_LOCAL_TO_PLAYLIST:
                 if(playlists.empty()) {
-                    create_playlist_cmd = playlistInterface.noPlaylistAvailable();
+                    create_playlist_cmd = interface_playlist.noPlaylistAvailable();
                     if(create_playlist_cmd == "Y" || create_playlist_cmd == "y") {
                         createPlaylist();
                     }
@@ -300,28 +296,27 @@ void MediaBrowser::modifyMediaFiles() {
                 return;
 
             default:
-                interface.invalidChoiceInterface();
+                interface_main.invalidChoiceInterface();
         }
     }
-    
 }
 
 void MediaBrowser::createPlaylist() {
     string new_name;
     string confirm_action;
-    playlistInterface.enterPlaylistName(CREATE_PLAYLIST);
+    interface_playlist.enterPlaylistName(CREATE_PLAYLIST);
     getline(cin, new_name);
     for(const auto& playlist : playlists) {
         if(playlist->getName() == new_name) {
-            playlistInterface.duplicateName(new_name);
+            interface_playlist.duplicateName(new_name);
             return;
         }
     }
-    playlistInterface.confirmAction(CREATE_PLAYLIST, new_name);
+    interface_playlist.confirmAction(CREATE_PLAYLIST, new_name);
     getline(cin, confirm_action);
     if(confirm_action == "Y" || confirm_action == "y") {
         playlists.push_back(new Playlist(new_name));
-        playlistInterface.createSuccessfully(new_name);
+        interface_playlist.createSuccessfully(new_name);
     }
 }
 
@@ -331,29 +326,29 @@ void MediaBrowser::addToPlaylist() {
     int currentPage = START_PAGE;
     int pageSize = PAGINATION_SIZE;
 
-    playlistInterface.viewPlaylist(playlists);
-    playlistInterface.enterPlaylistName(ADD_TO_PLAYLIST);
+    interface_playlist.viewPlaylist(playlists);
+    interface_playlist.enterPlaylistName(ADD_TO_PLAYLIST);
     playlist_idx = captureInput();
     if(playlist_idx > 0 && playlist_idx <= (int)playlists.size()) {
-        mediaFileInterface.displayMediaFiles(this, currentPage, pageSize);
-        mediaFileInterface.enterMediaFileName(ADD_TO_PLAYLIST);
+        interface_media_file.displayMediaFiles(this, currentPage, pageSize);
+        interface_media_file.enterMediaFileName(ADD_TO_PLAYLIST);
         file_idx = captureInput();
         if(file_idx > 0 && file_idx <= (int)mediaFiles.size()) {
             for(auto& file_in_playlist : playlists[playlist_idx-1]->getFiles()) {
                 if(file_in_playlist.getName() == mediaFiles[file_idx-1]->getName()) {
-                    mediaFileInterface.duplicateFile();
+                    interface_media_file.duplicateFile();
                     return;
                 }
             }
             playlists[playlist_idx - 1]->addFile(mediaFiles[file_idx - 1]);
-            mediaFileInterface.fileAddSuccess();
+            interface_media_file.fileAddSuccess();
         }
         else {
-            mediaFileInterface.fileAddError();
+            interface_media_file.fileAddError();
         }
     }
     else {
-        playlistInterface.playlistNotFound();
+        interface_playlist.playlistNotFound();
     } 
 }
 
@@ -363,41 +358,31 @@ void MediaBrowser::deleteFromPlaylist(Playlist* playlist) {
     }
     int file_idx;
     
-    playlistInterface.viewFilesInPlaylist(playlist);
-    mediaFileInterface.enterMediaFileName(DELETE_FROM_PLAYLIST);
+    interface_playlist.viewFilesInPlaylist(playlist);
+    interface_media_file.enterMediaFileName(DELETE_FROM_PLAYLIST);
     
     file_idx = captureInput();
     vector<MediaFile> media_files = playlist->getFiles();
     string file_name = media_files[file_idx-1].getName();
     if(file_idx > 0 && file_idx <= (int)media_files.size()) {
         playlist->deleteFile(file_idx - 1);
-        mediaFileInterface.fileDeleteSuccess(file_name);
+        interface_media_file.fileDeleteSuccess(file_name);
     }
     else {
-        mediaFileInterface.fileDeleteError();
+        interface_media_file.fileDeleteError();
     }
 }
 
 void MediaBrowser::deletePlaylist(int playlist_idx) {
     string confirm_action;
     string playlist_name = playlists[playlist_idx]->getName();
-    playlistInterface.confirmAction(DELETE_PLAYLIST, playlist_name);
+    interface_playlist.confirmAction(DELETE_PLAYLIST, playlist_name);
     getline(cin, confirm_action);
     if(confirm_action == "Y" || confirm_action == "y") {
         playlists[playlist_idx]->getFiles().clear();
         delete playlists[playlist_idx];
         playlists.erase(playlists.begin() + playlist_idx);
-        playlistInterface.deleteSuccessfully(playlist_name);
-        // auto it = find_if(playlists.begin(), playlists.end(), 
-        // [playlist_name](auto& playlist) {
-        //     return playlist->getName() == playlist_name;
-        // });
-        // if(it != playlists.end()) {
-        //     (*it)->getFiles().clear();
-        //     delete *it;
-        //     playlists.erase(it);
-        //     playlistInterface.deleteSuccessfully(playlist_name);
-        // }
+        interface_playlist.deleteSuccessfully(playlist_name);
     }
 }
 
@@ -410,26 +395,26 @@ void MediaBrowser::viewMetadata(int file_idx) {
         TagLib::Tag *tag = fileRef.tag();
         switch(file_type) {
         case AUDIO_FILE_TYPE:
-            mediaFileInterface.displayAudioFileMetadata(tag, fileRef);
+            interface_media_file.displayAudioFileMetadata(tag, fileRef);
             break;
         case VIDEO_FILE_TYPE:
-            mediaFileInterface.displayVideoFileMetadata(tag, fileRef, file_path);
+            interface_media_file.displayVideoFileMetadata(tag, fileRef, file_path);
             break;
         default:
-            mediaFileInterface.getMediaFileTypeError();
+            interface_media_file.getMediaFileTypeError();
         }
     } 
     else {
-        mediaFileInterface.getMetadataError();
+        interface_metadata.getMetadataError();
     }
 }
 
 void MediaBrowser::updateMetadata(int file_idx) {
     int update_opt;
     string new_value;
-    cout << "Choose a metadata field to modify: ";
+    interface_metadata.chooseMetadataField();
     update_opt = captureInput();
-    cout << "Enter new value: ";
+    interface_metadata.enterMetadataValue();
     getline(cin, new_value);
     string file_name = mediaFiles[file_idx-1]->getName();
     string file_path = mediaFiles[file_idx-1]->getPath();
@@ -454,10 +439,10 @@ void MediaBrowser::updateMetadata(int file_idx) {
             tag->setGenre(new_value.c_str());
             break;
         case MODIFY_AUDIO_DURATION:
-            mediaFileInterface.modifyMetadataError();
+            interface_metadata.modifyMetadataError();
             return;
         default:
-            interface.invalidChoiceInterface();
+            interface_main.invalidChoiceInterface();
         }
     }
 
@@ -467,20 +452,20 @@ void MediaBrowser::updateMetadata(int file_idx) {
             tag->setTitle(new_value.c_str());
             break;
         case MODIFY_SIZE:
-            mediaFileInterface.modifyMetadataError();
+            interface_metadata.modifyMetadataError();
             return;
         case MODIFY_BIT_RATE:
-            mediaFileInterface.modifyMetadataError();
+            interface_metadata.modifyMetadataError();
             return;
         case MODIFY_VIDEO_DURATION:
-            mediaFileInterface.modifyMetadataError();
+            interface_metadata.modifyMetadataError();
             return;
         default:
-            interface.invalidChoiceInterface();
+            interface_main.invalidChoiceInterface();
         }            
     }
     if(fileRef.save() == true) {
-        mediaFileInterface.modifyMetadataSuccess();
+        interface_metadata.modifyMetadataSuccess();
     }
 }
 

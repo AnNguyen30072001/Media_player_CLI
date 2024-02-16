@@ -1,7 +1,6 @@
 #ifndef __MEDIA_FILE_INTERFACE_
 #define __MEDIA_FILE_INTERFACE_
 
-// #include "main.h"
 #include <iostream>
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
@@ -38,15 +37,9 @@ public:
 
     void fileDeleteError();
 
-    void getMetadataError();
-
     void getMediaFileTypeError();
 
-    void metadataChooseFile(int input_case);
-
-    void modifyMetadataError();
-
-    void modifyMetadataSuccess();
+    void listEmpty();
 };
 
 #endif /* __MEDIA_FILE_INTERFACE_ */

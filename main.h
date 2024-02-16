@@ -11,6 +11,7 @@
 #include "Playlist.h"
 #include "MediaFileInterface.h"
 #include "PlaylistInterface.h"
+#include "MetadataInterface.h"
 #include "MainInterface.h"
 #include "AudioFile.h"
 #include "VideoFile.h"

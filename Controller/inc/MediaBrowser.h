@@ -18,9 +18,10 @@ class MediaBrowser {
 private:
     vector<MediaFile*> mediaFiles;
     vector<Playlist*> playlists;
-    MainInterface interface;
-    MediaFileInterface mediaFileInterface;
-    PlaylistInterface playlistInterface;
+    MainInterface interface_main;
+    MediaFileInterface interface_media_file;
+    PlaylistInterface interface_playlist;
+    MetadataInterface interface_metadata;
 public:
     MediaBrowser();
     ~MediaBrowser();

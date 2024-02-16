@@ -92,33 +92,10 @@ void MediaFileInterface::fileDeleteError() {
     cout << "File deletion failed. Media file name not found!" << endl;
 }
 
-void MediaFileInterface::getMetadataError() {
-    cerr << "Could not open file or retrieve tag." << endl;
-}
-
 void MediaFileInterface::getMediaFileTypeError() {
     cerr << "Unknown media file type!" << endl;
 }
 
-void MediaFileInterface::metadataChooseFile(int input_case) {
-    switch(input_case) {
-        case SHOW_METADATA:
-            cout << "Enter index of media file that you want to show metadata: ";
-            break;
-        
-        case UPDATE_METADATA:
-            cout << "Enter index of media file that you want to update metadata: ";
-            break;
-
-        default:
-        cerr << "Error!" << endl;
-    }
-}
-
-void MediaFileInterface::modifyMetadataError() {
-    cout << "This field cannot be modify." << endl;
-}
-
-void MediaFileInterface::modifyMetadataSuccess() {
-    cout << "Metadata updated succesfully!" << endl;
+void MediaFileInterface::listEmpty() {
+    cout << "There is no media files to show." << endl;
 }
