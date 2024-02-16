@@ -5,6 +5,8 @@
 
 #define START_PAGE          1
 #define PAGINATION_SIZE     10
+#define MP3_EXTENSION_NAME  ".mp3"
+#define MP4_EXTENSION_NAME  ".mp4"
 
 using namespace std;
 namespace fs = filesystem;
@@ -95,7 +97,7 @@ void MediaBrowser::playlistBrowser() {
                     deletePlaylist(playlist_idx - 1);
                 }
                 else {
-                    interface_playlist.playlistNotFound();
+                    interface_main.invalidChoiceInterface();
                 }
                 break;
             
@@ -153,6 +155,10 @@ void MediaBrowser::playlistMetadata() {
                 interface_playlist.viewPlaylist(playlists);
                 interface_playlist.enterPlaylistName(PLAYLIST_METADATA);
                 playlist_idx = captureInput();
+                if(playlist_idx <= 0 || playlist_idx > (int)playlists.size()) {
+                    interface_main.invalidChoiceInterface();
+                    continue;
+                }
                 if(playlists[playlist_idx - 1]->getFiles().empty()) {
                     interface_metadata.listEmpty(SHOW_METADATA);
                     return;
@@ -160,8 +166,22 @@ void MediaBrowser::playlistMetadata() {
                 interface_playlist.viewFilesInPlaylist(playlists[playlist_idx - 1]);
                 interface_metadata.metadataChooseFile(SHOW_METADATA);
                 file_idx = captureInput();
-                if(file_idx > 0 && file_idx <= (int)playlists[playlist_idx - 1]->getFiles().size()){
-                    viewMetadata(file_idx);
+                if(file_idx > 0 && file_idx <= (int)playlists[playlist_idx - 1]->getFiles().size()) {
+                    bool file_found = false;
+                    int local_media_file_idx = 1;
+                    string file_name = playlists[playlist_idx-1]->getFiles()[file_idx-1].getName();
+                    for(const auto& local_file : mediaFiles) {
+                        if(file_name == local_file->getName()) {
+                            file_idx = local_media_file_idx;
+                            file_found = true;
+                            break;
+                        }
+                        local_media_file_idx++;
+                    }
+                    if(file_found == true)
+                        viewMetadata(file_idx);
+                    else
+                        interface_metadata.getMetadataError();
                 }
                 else {
                     interface_main.invalidChoiceInterface();
@@ -176,6 +196,10 @@ void MediaBrowser::playlistMetadata() {
                 interface_playlist.viewPlaylist(playlists);
                 interface_playlist.enterPlaylistName(PLAYLIST_METADATA);
                 playlist_idx = captureInput();
+                if(playlist_idx <= 0 || playlist_idx > (int)playlists.size()) {
+                    interface_main.invalidChoiceInterface();
+                    continue;
+                }
                 if(playlists[playlist_idx - 1]->getFiles().empty()) {
                     interface_metadata.listEmpty(UPDATE_METADATA);
                     return;
@@ -233,11 +257,11 @@ void MediaBrowser::loadMediaFiles(const string& directory) {
             string fileExtension = entry.path().extension().string();
             transform(fileExtension.begin(), fileExtension.end(), fileExtension.begin(), ::tolower);
             
-            if (fileExtension == ".mp3") {
+            if (fileExtension == MP3_EXTENSION_NAME) {
                 mediaFiles.push_back(new AudioFile(entry.path().filename().string(), entry.path().string()));
             }
 
-            if (fileExtension == ".mp4") {
+            if (fileExtension == MP4_EXTENSION_NAME) {
                 mediaFiles.push_back(new VideoFile(entry.path().filename().string(), entry.path().string()));
             }
         }
@@ -348,7 +372,7 @@ void MediaBrowser::addToPlaylist() {
         }
     }
     else {
-        interface_playlist.playlistNotFound();
+        interface_main.invalidChoiceInterface();
     } 
 }
 
@@ -419,7 +443,7 @@ void MediaBrowser::updateMetadata(int file_idx) {
     string file_name = mediaFiles[file_idx-1]->getName();
     string file_path = mediaFiles[file_idx-1]->getPath();
     int file_type = mediaFiles[file_idx-1]->getType();
-    TagLib::FileRef fileRef(file_name.c_str());
+    TagLib::FileRef fileRef(file_path.c_str());
     TagLib::Tag *tag = fileRef.tag();
     if(file_type == AUDIO_FILE_TYPE) {
         switch(update_opt) {
