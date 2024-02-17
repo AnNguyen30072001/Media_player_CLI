@@ -20,6 +20,12 @@ MediaPlayer::MediaPlayer()
     }
 }
 
+MediaPlayer::~MediaPlayer()
+{
+    SDL_Quit();
+    Mix_CloseAudio();
+}
+
 int MediaPlayer::getAudioDuration(string filename)
 {
     AVFormatContext* formatContext = avformat_alloc_context();

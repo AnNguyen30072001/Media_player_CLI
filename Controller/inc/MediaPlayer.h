@@ -18,7 +18,7 @@ private:
     MediaPlayerInterface interface_music_player;
 public:
     MediaPlayer();
-    ~MediaPlayer() = default;
+    ~MediaPlayer();
 
     int getAudioDuration(string filename);
 
@@ -45,16 +45,12 @@ public:
         Mix_Music *music = Mix_LoadMUS(filename.c_str());
         if (music == nullptr) {
             interface_music_local.loadFailed();
-            Mix_CloseAudio();
-            SDL_Quit();
         }
 
         // Play the music
         if (Mix_PlayMusic(music, 1) == -1) {
             interface_music_local.playFailed();
             Mix_FreeMusic(music);
-            Mix_CloseAudio();
-            SDL_Quit();
         }
 
         auto startTime = chrono::steady_clock::now();
@@ -84,16 +80,15 @@ public:
             if(elapsedTime >= duration_seconds || force_stopped == true)
             {
                 playing = false;
+                return;
             }
 
             // Delay to avoid high CPU usage
             this_thread::sleep_for(chrono::milliseconds(500));
         }
 
-        // Free resources and quit SDL
+        // Free resources
         Mix_FreeMusic(music);
-        Mix_CloseAudio();
-        SDL_Quit();
     }
 };
 
