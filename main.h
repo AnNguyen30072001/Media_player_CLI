@@ -9,6 +9,15 @@
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
 #include <taglib/taglib.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#include <chrono>
+#include <thread>
+#include <atomic>
+
+extern "C" {
+    #include <libavformat/avformat.h>
+}
 
 using namespace std;
 
@@ -27,7 +36,8 @@ enum {
 enum {
     EXIT_APPLICATION                = 0,
     GO_TO_MEDIA_FILES               = 1,
-    GO_TO_PLAYLISTS                 = 2
+    GO_TO_PLAYLISTS                 = 2,
+    MUSIC_PLAYER                    = 3
 };
 
 enum {
@@ -65,6 +75,11 @@ enum {
     MODIFY_SIZE                     = 2,
     MODIFY_BIT_RATE                 = 3,
     MODIFY_VIDEO_DURATION           = 4,
+};
+
+enum {
+    PLAY_MUSIC                      = 1,
+    MUSIC_PLAYER_OPTIONS            = 2
 };
 
 #endif /* D7C31025_8304_468E_9946_7B906190DACD */

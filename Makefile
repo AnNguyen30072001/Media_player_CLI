@@ -1,7 +1,8 @@
 CC = g++
 CFLAGS = -Wall -std=c++17
-LDFLAGS = -ltag
+LDFLAGS = -ltag -lSDL2 -lSDL2_mixer -pthread -lavformat
 SRC_DIR = .
+FFMPEG_DIR = /usr/include/ffmpeg
 BUILD_DIR = build
 TARGET = my_media_player
 
@@ -13,7 +14,7 @@ INCS = $(wildcard $(SRC_DIR)/*.h $(SRC_DIR)/*/*/*.h)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRCS))
 
 # Include directories
-INC_DIRS = -I$(SRC_DIR) -I$(SRC_DIR)/Controller/inc -I$(SRC_DIR)/Model/inc -I$(SRC_DIR)/View/inc
+INC_DIRS = -I$(SRC_DIR) -I$(SRC_DIR)/Controller/inc -I$(SRC_DIR)/Model/inc -I$(SRC_DIR)/View/inc -I$(FFMPEG_DIR)
 
 # Run
 run: build

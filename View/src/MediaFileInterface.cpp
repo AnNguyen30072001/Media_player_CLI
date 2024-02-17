@@ -65,6 +65,10 @@ void MediaFileInterface::enterMediaFileName(int input_case) {
         case DELETE_FROM_PLAYLIST:
             cout << "Enter index of media file that you want to delete from this playlist: ";
             break;
+        
+        case MUSIC_PLAYER:
+            cout << "Enter index of music file that you want to play: " << endl;
+            break;
 
         default:
         cerr << "Error!" << endl;

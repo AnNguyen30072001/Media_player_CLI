@@ -141,6 +141,52 @@ void MediaBrowser::playlistBrowser() {
     }
 }
 
+void MediaBrowser::musicBrowser() {
+    thread music_thread;
+    int input_command;
+    int file_idx;
+    string file_path;
+    int duration_seconds;
+    while(true) {
+        interface_music_player.menuInterface();
+
+        input_command = captureInput();
+        switch(input_command) {
+        case PLAY_MUSIC:
+            interface_media_file.displayMediaFiles(this, START_PAGE, PAGINATION_SIZE);
+            interface_media_file.enterMediaFileName(MUSIC_PLAYER);
+            file_idx = captureInput();
+            if(file_idx <= 0 || file_idx > (int)mediaFiles.size()) {
+                interface_main.invalidChoiceInterface();
+                continue;
+            }
+
+            mediaPlayer.forceStopMusic();
+            /* Delay to wait for music thread to quit */
+            while(mediaPlayer.isPlaying()) {}
+            mediaPlayer.resetForceStopFlag();
+
+            file_path = mediaFiles[file_idx-1]->getPath();
+            duration_seconds = mediaPlayer.getAudioDuration(file_path);
+
+            music_thread = thread(MediaPlayer::playMusic, file_path, duration_seconds);
+            music_thread.detach();
+
+            break;
+        
+        case MUSIC_PLAYER_OPTIONS:
+            mediaPlayer.playOption();
+            break;
+        
+        case BACK:
+            return;
+        
+        default:
+            interface_main.invalidChoiceInterface();
+        }
+    }
+}
+
 void MediaBrowser::playlistMetadata() {
     int metadata_cmd;
     int playlist_idx;
@@ -245,6 +291,10 @@ void MediaBrowser::mainProgram() {
             
             case GO_TO_PLAYLISTS:
                 playlistBrowser();
+                break;
+
+            case MUSIC_PLAYER:
+                musicBrowser();
                 break;
 
             case EXIT_APPLICATION:

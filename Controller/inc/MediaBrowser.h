@@ -6,8 +6,10 @@
 #include "MainInterface.h"
 #include "MediaFileInterface.h"
 #include "PlaylistInterface.h"
+#include "MediaPlayerInterface.h"
 #include "Playlist.h"
 #include "Metadata.h"
+#include "MediaPlayer.h"
 
 class MediaBrowser {
 private:
@@ -15,11 +17,13 @@ private:
     vector<Playlist*> playlists;
 
     Metadata metadata;
+    MediaPlayer mediaPlayer;
 
     MainInterface interface_main;
     MediaFileInterface interface_media_file;
     PlaylistInterface interface_playlist;
     MetadataInterface interface_metadata;
+    MediaPlayerInterface interface_music_player;
 public:
     MediaBrowser();
     ~MediaBrowser();
@@ -31,6 +35,8 @@ public:
     int emptyPlaylistHandler();
 
     void playlistBrowser();
+
+    void musicBrowser();
 
     void playlistMetadata();
 
