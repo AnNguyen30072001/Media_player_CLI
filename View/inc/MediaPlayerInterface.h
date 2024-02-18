@@ -6,7 +6,6 @@
 class MediaPlayerInterface
 {
 private:
-
 public:
     MediaPlayerInterface() = default;
     ~MediaPlayerInterface() = default;

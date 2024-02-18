@@ -146,7 +146,6 @@ void MediaBrowser::musicBrowser() {
     int input_command;
     int file_idx;
     string file_path;
-    // int duration_seconds;
     while(true) {
         interface_music_player.menuInterface();
 
@@ -165,9 +164,6 @@ void MediaBrowser::musicBrowser() {
             /* Delay to wait for music thread to quit */
             while(mediaPlayer.isPlaying()) {}
             mediaPlayer.resetForceStopFlag();
-
-            // file_path = audioFiles[file_idx-1]->getPath();
-            // duration_seconds = mediaPlayer.getAudioDuration(file_path);
 
             music_thread = thread(MediaPlayer::playMusic, audioFiles, file_idx-1);
             music_thread.detach();

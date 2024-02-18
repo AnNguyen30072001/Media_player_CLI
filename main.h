@@ -82,9 +82,4 @@ enum {
     MUSIC_PLAYER_OPTIONS            = 2
 };
 
-enum {
-    DISPLAY_ALL_FILES               = 1,
-    DISPLAY_MUSIC_FILES             = 2
-};
-
 #endif /* D7C31025_8304_468E_9946_7B906190DACD */

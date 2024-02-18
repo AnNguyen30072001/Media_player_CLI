@@ -20,18 +20,20 @@ void MediaPlayerInterface::playFailed()
     cerr << "Failed to play music! SDL_mixer Error: " << Mix_GetError() << endl;
 }
 
-void MediaPlayerInterface::displayCurrentFileName(string name) {
-    cout << endl << "----------Now playing: " << name << "----------" << endl;
+void MediaPlayerInterface::displayCurrentFileName(string name)
+{
+    cout << endl
+         << "----------Now playing: " << name << "----------" << endl;
 }
 
-void MediaPlayerInterface::displayCurrentTime(int current_minute, int current_second, 
-    int duration_minute, int duration_second)
+void MediaPlayerInterface::displayCurrentTime(int current_minute, int current_second,
+                                              int duration_minute, int duration_second)
 {
     // Move cursor to the beginning of the line
     cout << "\r";
     // Print the updated information
-    cout << "Current Time: " << current_minute << ":" << current_second << " / " 
-            << duration_minute << ":" << duration_second << flush;
+    cout << "Current Time: " << current_minute << ":" << current_second << " / "
+         << duration_minute << ":" << duration_second << flush;
 }
 
 void MediaPlayerInterface::notPlayingNotice()
@@ -61,5 +63,6 @@ void MediaPlayerInterface::changeVolume()
 
 void MediaPlayerInterface::endPlaylist()
 {
-    cout << endl << "End playlist. Quitting music player now...." << endl;
+    cout << endl
+         << "End playlist. Quitting music player now...." << endl;
 }
