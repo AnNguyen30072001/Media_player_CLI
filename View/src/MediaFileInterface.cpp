@@ -38,6 +38,25 @@ void MediaFileInterface::displayMediaFiles(MediaBrowser* browser, int page, int 
     }
 }
 
+void MediaFileInterface::displayAudioFiles(MediaBrowser* browser, int page, int pageSize) {
+    cout << "--------------------------------------------------------" << endl;
+    int startIdx = (page - 1) * pageSize;
+    int endIdx = min(startIdx + pageSize, static_cast<int>(browser->getAudioFiles().size()));
+
+    for (int i = startIdx; i < endIdx; ++i) {
+        cout << i+1 << ". " << browser->getAudioFiles()[i]->getName() << " - " << browser->getAudioFiles()[i]->getPath() << endl;
+    }
+
+    if(endIdx < (int)browser->getAudioFiles().size()) {
+        string cont;
+        cout << "Show more? (Y/N): ";
+        getline(cin, cont);
+        if(cont == "Y" || cont == "y") {
+            displayAudioFiles(browser, page + 1, pageSize);
+        }
+    }
+}
+
 void MediaFileInterface::displayAudioFileMetadata(TagLib::Tag* tag, TagLib::FileRef fileRef) {
     cout << "1. Track:   " << tag->track() << endl;
     cout << "2. Album:   " << tag->album().toCString(true) << endl;

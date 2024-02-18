@@ -2,6 +2,8 @@
 
 bool MediaPlayer::playing = false;
 bool MediaPlayer::pause = false;
+bool MediaPlayer::play_next = false;
+bool MediaPlayer::play_back = false;
 bool MediaPlayer::waiting_for_input = false;
 bool MediaPlayer::force_stopped = false;
 
@@ -26,24 +28,24 @@ MediaPlayer::~MediaPlayer()
     Mix_CloseAudio();
 }
 
-int MediaPlayer::getAudioDuration(string filename)
-{
-    AVFormatContext* formatContext = avformat_alloc_context();
-    if (avformat_open_input(&formatContext, filename.c_str(), NULL, NULL) != 0) {
-        return -1; // Failed to open file
-    }
+// int MediaPlayer::getAudioDuration(string filename)
+// {
+//     AVFormatContext* formatContext = avformat_alloc_context();
+//     if (avformat_open_input(&formatContext, filename.c_str(), NULL, NULL) != 0) {
+//         return -1; // Failed to open file
+//     }
 
-    if (avformat_find_stream_info(formatContext, NULL) < 0) {
-        avformat_close_input(&formatContext);
-        return -1; // Failed to find stream info
-    }
+//     if (avformat_find_stream_info(formatContext, NULL) < 0) {
+//         avformat_close_input(&formatContext);
+//         return -1; // Failed to find stream info
+//     }
 
-    int duration_seconds = formatContext->duration / AV_TIME_BASE;
+//     int duration_seconds = formatContext->duration / AV_TIME_BASE;
 
-    avformat_close_input(&formatContext);
+//     avformat_close_input(&formatContext);
 
-    return duration_seconds;
-}
+//     return duration_seconds;
+// }
 
 void MediaPlayer::playOption() 
 {
@@ -64,7 +66,6 @@ void MediaPlayer::playOption()
                 break;
             case 'n':
                 next();
-                playing = false;
                 break;
             case 'b':
                 rewind();
@@ -98,13 +99,14 @@ void MediaPlayer::playOrPause()
 
 void MediaPlayer::next()
 {
-    Mix_HaltMusic();
-    playing = false;
+    // Mix_HaltMusic();
+    play_next = true;
 }
 
 void MediaPlayer::rewind()
 {
-    Mix_RewindMusic();
+    play_back = true;
+    // Mix_RewindMusic();
 }
 
 void MediaPlayer::changeVolume()

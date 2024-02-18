@@ -16,6 +16,8 @@ public:
 
     void displayMediaFiles(MediaBrowser* browser, int page, int pageSize);
 
+    void displayAudioFiles(MediaBrowser* browser, int page, int pageSize);
+
     void displayAudioFileMetadata(TagLib::Tag* tag, TagLib::FileRef fileRef);
 
     void displayVideoFileMetadata(TagLib::Tag* tag, TagLib::FileRef fileRef, string file_path);

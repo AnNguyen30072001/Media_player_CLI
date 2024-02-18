@@ -4,6 +4,7 @@
 #include "main.h"
 #include "MainInterface.h"
 #include "MediaPlayerInterface.h"
+#include "AudioFile.h"
 
 class MediaPlayer
 {
@@ -11,6 +12,8 @@ private:
     int volume;
     static bool playing;
     static bool pause;
+    static bool play_next;
+    static bool play_back;
     static bool waiting_for_input;
     static bool force_stopped;
 
@@ -20,7 +23,24 @@ public:
     MediaPlayer();
     ~MediaPlayer();
 
-    int getAudioDuration(string filename);
+    static int getAudioDuration(string filename)
+    {
+        AVFormatContext* formatContext = avformat_alloc_context();
+        if (avformat_open_input(&formatContext, filename.c_str(), NULL, NULL) != 0) {
+            return -1; // Failed to open file
+        }
+
+        if (avformat_find_stream_info(formatContext, NULL) < 0) {
+            avformat_close_input(&formatContext);
+            return -1; // Failed to find stream info
+        }
+
+        int duration_seconds = formatContext->duration / AV_TIME_BASE;
+
+        avformat_close_input(&formatContext);
+
+        return duration_seconds;
+    }
 
     void playOption();
 
@@ -38,11 +58,16 @@ public:
 
     void resetForceStopFlag();
 
-    static void playMusic(string filename, int duration_seconds)
+    static void playMusic(vector<AudioFile*> audioFiles, int file_idx)
     {
         MediaPlayerInterface interface_music_local;
+        string file_path = audioFiles[file_idx]->getPath();
+        int duration_seconds = getAudioDuration(file_path);
+
+        interface_music_local.displayCurrentFileName(file_path);
+
         // Load music
-        Mix_Music *music = Mix_LoadMUS(filename.c_str());
+        Mix_Music *music = Mix_LoadMUS(file_path.c_str());
         if (music == nullptr) {
             interface_music_local.loadFailed();
         }
@@ -77,10 +102,29 @@ public:
             
             interface_music_local.displayCurrentTime(currentMinutes, currentSeconds, durationMinutes, durationSeconds);
 
-            if(elapsedTime >= duration_seconds || force_stopped == true)
-            {
+            if(elapsedTime >= duration_seconds || play_next) {
+                if((file_idx + 1) < (int)audioFiles.size()) {
+                    play_next = false;
+                    playMusic(audioFiles, file_idx + 1);
+                }
+                else {
+                    interface_music_local.endPlaylist();
+                    play_next = false;
+                    playing = false;
+                    return;
+                }
+            }
+
+            if(force_stopped) {
                 playing = false;
                 return;
+            }
+
+            if(play_back) {
+                play_back = false;
+                startTime = now;
+                elapsedTime = 0;
+                Mix_RewindMusic();
             }
 
             // Delay to avoid high CPU usage

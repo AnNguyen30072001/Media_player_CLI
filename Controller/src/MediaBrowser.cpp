@@ -146,17 +146,17 @@ void MediaBrowser::musicBrowser() {
     int input_command;
     int file_idx;
     string file_path;
-    int duration_seconds;
+    // int duration_seconds;
     while(true) {
         interface_music_player.menuInterface();
 
         input_command = captureInput();
         switch(input_command) {
         case PLAY_MUSIC:
-            interface_media_file.displayMediaFiles(this, START_PAGE, PAGINATION_SIZE);
+            interface_media_file.displayAudioFiles(this, START_PAGE, PAGINATION_SIZE);
             interface_media_file.enterMediaFileName(MUSIC_PLAYER);
             file_idx = captureInput();
-            if(file_idx <= 0 || file_idx > (int)mediaFiles.size()) {
+            if(file_idx <= 0 || file_idx > (int)audioFiles.size()) {
                 interface_main.invalidChoiceInterface();
                 continue;
             }
@@ -166,10 +166,10 @@ void MediaBrowser::musicBrowser() {
             while(mediaPlayer.isPlaying()) {}
             mediaPlayer.resetForceStopFlag();
 
-            file_path = mediaFiles[file_idx-1]->getPath();
-            duration_seconds = mediaPlayer.getAudioDuration(file_path);
+            // file_path = audioFiles[file_idx-1]->getPath();
+            // duration_seconds = mediaPlayer.getAudioDuration(file_path);
 
-            music_thread = thread(MediaPlayer::playMusic, file_path, duration_seconds);
+            music_thread = thread(MediaPlayer::playMusic, audioFiles, file_idx-1);
             music_thread.detach();
 
             break;
@@ -315,6 +315,7 @@ void MediaBrowser::loadMediaFiles(const string& directory) {
             
             if (fileExtension == MP3_EXTENSION_NAME) {
                 mediaFiles.push_back(new AudioFile(entry.path().filename().string(), entry.path().string()));
+                audioFiles.push_back(new AudioFile(entry.path().filename().string(), entry.path().string()));
             }
 
             if (fileExtension == MP4_EXTENSION_NAME) {
@@ -471,6 +472,10 @@ void MediaBrowser::deletePlaylist(int playlist_idx) {
 
 vector<MediaFile*> MediaBrowser::getMediaFiles() {
     return mediaFiles;
+}
+
+vector<AudioFile*> MediaBrowser::getAudioFiles() {
+    return audioFiles;
 }
 
 vector<Playlist*> MediaBrowser::getPlaylists() {

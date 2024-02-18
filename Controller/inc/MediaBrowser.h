@@ -3,6 +3,7 @@
 
 #include "main.h"
 #include "MediaFile.h"
+#include "AudioFile.h"
 #include "MainInterface.h"
 #include "MediaFileInterface.h"
 #include "PlaylistInterface.h"
@@ -14,6 +15,7 @@
 class MediaBrowser {
 private:
     vector<MediaFile*> mediaFiles;
+    vector<AudioFile*> audioFiles;
     vector<Playlist*> playlists;
 
     Metadata metadata;
@@ -55,6 +57,8 @@ public:
     void deletePlaylist(int playlist_idx);
 
     vector<MediaFile*> getMediaFiles();
+
+    vector<AudioFile*> getAudioFiles();
 
     vector<Playlist*> getPlaylists();
 };

@@ -17,6 +17,8 @@ public:
 
     void playFailed();
 
+    void displayCurrentFileName(string);
+
     void displayCurrentTime(int, int, int, int);
 
     void notPlayingNotice();
@@ -28,6 +30,8 @@ public:
     void pauseMusic();
 
     void changeVolume();
+
+    void endPlaylist();
 };
 
 #endif /* __MEDIA_PLAYER_INTERFACE_ */
