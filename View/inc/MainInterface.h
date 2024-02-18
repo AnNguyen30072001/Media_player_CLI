@@ -3,9 +3,9 @@
 
 #include "Playlist.h"
 
-class MainInterface {
+class MainInterface
+{
 private:
-
 public:
     MainInterface() = default;
     ~MainInterface() = default;

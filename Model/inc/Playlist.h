@@ -6,15 +6,17 @@
 
 using namespace std;
 
-class Playlist {
+class Playlist
+{
 private:
     string name;
     vector<MediaFile> files;
+
 public:
-    Playlist(const string& n) : name(n) {}
+    Playlist(const string &n) : name(n) {}
     ~Playlist() = default;
 
-    void addFile(MediaFile* file);
+    void addFile(MediaFile *file);
 
     void deleteFile(int file_idx);
 

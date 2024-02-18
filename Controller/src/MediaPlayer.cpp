@@ -4,7 +4,6 @@ bool MediaPlayer::playing = false;
 bool MediaPlayer::pause = false;
 bool MediaPlayer::play_next = false;
 bool MediaPlayer::play_back = false;
-bool MediaPlayer::waiting_for_input = false;
 bool MediaPlayer::force_stopped = false;
 
 MediaPlayer::MediaPlayer()
@@ -43,7 +42,6 @@ void MediaPlayer::playOption()
         char option;
         cin >> option;
         cin.ignore();
-        waiting_for_input = true;
 
         switch (option)
         {

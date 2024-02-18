@@ -5,16 +5,17 @@
 
 class Playlist;
 
-class PlaylistInterface {
+class PlaylistInterface
+{
 public:
     PlaylistInterface() = default;
     ~PlaylistInterface() = default;
 
     void menuInterface();
 
-    void viewPlaylist(vector<Playlist*> playlists);
+    void viewPlaylist(vector<Playlist *> playlists);
 
-    void viewFilesInPlaylist(Playlist* playlist);
+    void viewFilesInPlaylist(Playlist *playlist);
 
     string noPlaylistAvailable();
 

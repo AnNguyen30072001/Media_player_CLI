@@ -1,7 +1,8 @@
 #include "main.h"
 #include "MediaBrowser.h"
 
-int main() {
+int main()
+{
     MediaBrowser mediaBrowser;
 
     mediaBrowser.mainProgram();

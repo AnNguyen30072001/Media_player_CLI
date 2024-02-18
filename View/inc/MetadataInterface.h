@@ -1,7 +1,7 @@
 #ifndef __METADATA_INTERFACE_
 #define __METADATA_INTERFACE_
 
-class MetadataInterface 
+class MetadataInterface
 {
 public:
     MetadataInterface() = default;
@@ -23,6 +23,5 @@ public:
 
     void listEmpty(int input_case);
 };
-
 
 #endif /* __METADATA_INTERFACE_ */

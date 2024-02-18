@@ -17,13 +17,14 @@ private:
     MediaFileInterface interface_media_file;
     MetadataInterface interface_metadata;
     MainInterface interface_main;
+
 public:
     Metadata() = default;
     ~Metadata() = default;
 
-    void viewMetadata(MediaBrowser* browser, int file_idx);
+    void viewMetadata(MediaBrowser *browser, int file_idx);
 
-    void updateMetadata(MediaBrowser* browser, int file_idx);
+    void updateMetadata(MediaBrowser *browser, int file_idx);
 };
 
 #endif

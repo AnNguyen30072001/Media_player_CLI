@@ -1,15 +1,17 @@
 #include "Metadata.h"
 #include "MediaBrowser.h"
 
-void Metadata::viewMetadata(MediaBrowser* browser, int file_idx)
+void Metadata::viewMetadata(MediaBrowser *browser, int file_idx)
 {
-    file_name = browser->getMediaFiles()[file_idx-1]->getName();
-    file_path = browser->getMediaFiles()[file_idx-1]->getPath();
-    file_type = browser->getMediaFiles()[file_idx-1]->getType();
+    file_name = browser->getMediaFiles()[file_idx - 1]->getName();
+    file_path = browser->getMediaFiles()[file_idx - 1]->getPath();
+    file_type = browser->getMediaFiles()[file_idx - 1]->getType();
     TagLib::FileRef fileRef(file_path.c_str());
-    if (!fileRef.isNull() && fileRef.tag()) {
+    if (!fileRef.isNull() && fileRef.tag())
+    {
         TagLib::Tag *tag = fileRef.tag();
-        switch(file_type) {
+        switch (file_type)
+        {
         case AUDIO_FILE_TYPE:
             interface_media_file.displayAudioFileMetadata(tag, fileRef);
             break;
@@ -19,13 +21,14 @@ void Metadata::viewMetadata(MediaBrowser* browser, int file_idx)
         default:
             interface_media_file.getMediaFileTypeError();
         }
-    } 
-    else {
+    }
+    else
+    {
         interface_metadata.getMetadataError();
     }
 }
 
-void Metadata::updateMetadata(MediaBrowser* browser, int file_idx)
+void Metadata::updateMetadata(MediaBrowser *browser, int file_idx)
 {
     int update_opt;
     string new_value;
@@ -35,13 +38,15 @@ void Metadata::updateMetadata(MediaBrowser* browser, int file_idx)
     interface_metadata.enterMetadataValue();
 
     getline(cin, new_value);
-    file_name = browser->getMediaFiles()[file_idx-1]->getName();
-    file_path = browser->getMediaFiles()[file_idx-1]->getPath();
-    file_type = browser->getMediaFiles()[file_idx-1]->getType();
+    file_name = browser->getMediaFiles()[file_idx - 1]->getName();
+    file_path = browser->getMediaFiles()[file_idx - 1]->getPath();
+    file_type = browser->getMediaFiles()[file_idx - 1]->getType();
     TagLib::FileRef fileRef(file_path.c_str());
     TagLib::Tag *tag = fileRef.tag();
-    if(file_type == AUDIO_FILE_TYPE) {
-        switch(update_opt) {
+    if (file_type == AUDIO_FILE_TYPE)
+    {
+        switch (update_opt)
+        {
         case MODIFY_TRACK:
             tag->setTrack(stoi(new_value));
             break;
@@ -65,8 +70,10 @@ void Metadata::updateMetadata(MediaBrowser* browser, int file_idx)
         }
     }
 
-    else {
-        switch(update_opt) {
+    else
+    {
+        switch (update_opt)
+        {
         case MODIFY_VIDEO_NAME:
             tag->setTitle(new_value.c_str());
             break;
@@ -81,9 +88,10 @@ void Metadata::updateMetadata(MediaBrowser* browser, int file_idx)
             return;
         default:
             interface_main.invalidChoiceInterface();
-        }            
+        }
     }
-    if(fileRef.save() == true) {
+    if (fileRef.save() == true)
+    {
         interface_metadata.modifyMetadataSuccess();
     }
 }

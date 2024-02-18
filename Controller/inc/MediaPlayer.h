@@ -14,7 +14,6 @@ private:
     static bool pause;
     static bool play_next;
     static bool play_back;
-    static bool waiting_for_input;
     static bool force_stopped;
 
     MainInterface interface_main;
@@ -95,12 +94,6 @@ public:
         playing = true;
         while (playing)
         {
-            if (waiting_for_input)
-            {
-                cout << endl;
-                waiting_for_input = false;
-            }
-
             if(pause)
             {
                 if(!pauseTimer)

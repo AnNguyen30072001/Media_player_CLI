@@ -7,7 +7,7 @@ void MediaPlayerInterface::menuInterface()
     cout << "1. Play music from local files." << endl;
     cout << "2. Music player options." << endl;
     cout << "0. Back." << endl;
-    cout << "Enter your command: ";
+    cout << "Enter your command: " << endl;
 }
 
 void MediaPlayerInterface::loadFailed()
@@ -23,7 +23,7 @@ void MediaPlayerInterface::playFailed()
 void MediaPlayerInterface::displayCurrentFileName(string name)
 {
     cout << endl
-         << "----------Now playing: " << name << "----------" << endl;
+         << "----------Now playing: " << name << "----------";
 }
 
 void MediaPlayerInterface::displayCurrentTime(int current_minute, int current_second,

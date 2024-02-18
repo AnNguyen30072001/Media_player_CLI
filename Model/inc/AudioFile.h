@@ -3,9 +3,9 @@
 
 #include "MediaFile.h"
 
-class AudioFile : public MediaFile {
+class AudioFile : public MediaFile
+{
 private:
-
 public:
     AudioFile(const string &n, const string &p);
     ~AudioFile() = default;

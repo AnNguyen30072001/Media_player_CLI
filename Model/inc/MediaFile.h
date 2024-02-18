@@ -4,13 +4,15 @@
 #include <iostream>
 using namespace std;
 
-class MediaFile {
+class MediaFile
+{
 protected:
     string name;
     string path;
     int type;
+
 public:
-    MediaFile(const string& n, const string& p);
+    MediaFile(const string &n, const string &p);
     virtual ~MediaFile() = default;
 
     string getName();

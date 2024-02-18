@@ -5,7 +5,8 @@
 
 class MediaBrowser;
 
-class MediaFileInterface {
+class MediaFileInterface
+{
 public:
     MediaFileInterface() = default;
     ~MediaFileInterface() = default;
@@ -14,15 +15,15 @@ public:
 
     void modifyMenuInterface();
 
-    void displayMediaFiles(MediaBrowser* browser, int page, int pageSize);
+    void displayMediaFiles(MediaBrowser *browser, int page, int pageSize);
 
-    void displayAudioFiles(MediaBrowser* browser, int page, int pageSize);
+    void displayAudioFiles(MediaBrowser *browser, int page, int pageSize);
 
-    void displayAudioFileMetadata(TagLib::Tag* tag, TagLib::FileRef fileRef);
+    void displayAudioFileMetadata(TagLib::Tag *tag, TagLib::FileRef fileRef);
 
-    void displayVideoFileMetadata(TagLib::Tag* tag, TagLib::FileRef fileRef, string file_path);
+    void displayVideoFileMetadata(TagLib::Tag *tag, TagLib::FileRef fileRef, string file_path);
 
-    void enterMediaFileName( int input_case);
+    void enterMediaFileName(int input_case);
 
     void duplicateFile();
 
